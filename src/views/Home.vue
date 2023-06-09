@@ -17,3 +17,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+div {
+  margin: 2rem 0;
+}
+</style>
