@@ -3,8 +3,16 @@
     <FormComp typeData="edit" />
     <span @click="closeEditModal">Close edit modal</span>
   </div>
+  <div v-if="modalDeleteOpen" class="modal">
+    <div>Tem certeza que deseja deletar usuário?</div>
+    <div>
+      <button>Sim</button>
+      <button>Cancelar</button>
+    </div>
+    <span @click="closeDeleteModal">Close delete modal</span>
+  </div>
   <main class="users main-container">
-    <h1>Usuários</h1>
+    <h1>Usuários:</h1>
     <ul>
       <li v-for="user in users" :key="user.name">
         <p>Nome: {{ user.name }}</p>
@@ -14,8 +22,8 @@
         <button @click="openDeleteModal(user.name)">Deletar</button>
       </li>
     </ul>
-    <p>páginas</p>
-    <div>
+    <div class="pages">
+      <p>Páginas:</p>
       <button>&lt;</button>
       <p>{{ page }}</p>
       <button>></button>
@@ -33,11 +41,7 @@ export default {
   },
   data() {
     return {
-      users: [
-        { id: 1, name: "Wesley", age: 22, email: "wesleydematos3@gmail.com" },
-        { id: 2, name: "werbert", age: 22, email: "werbert@gmail.com" },
-        { id: 3, name: "hortencia", age: 22, email: "hot3@gmail.com" },
-      ],
+      users: [],
       page: 1,
       nextPage: "link.com",
       modalEditOpen: false,
@@ -59,6 +63,47 @@ export default {
     closeDeleteModal() {
       this.modalDeleteOpen = false;
     },
+    async getUsers() {
+      const req = await fetch(`http://localhost:3000/users/?page=${this.page}`);
+
+      const data = await req.json();
+
+      this.users = data.rows;
+      this.nextPage = data.nextPage;
+    },
+  },
+  mounted() {
+    this.getUsers();
   },
 };
 </script>
+
+<style scoped>
+.users {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  margin: 2rem 0;
+}
+
+ul {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 80%;
+  gap: 3rem;
+}
+
+li {
+  width: 280px;
+}
+
+.pages {
+  margin-top: 3.5rem;
+  display: flex;
+  gap: 0.3rem;
+}
+</style>
