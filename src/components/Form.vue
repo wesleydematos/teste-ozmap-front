@@ -1,15 +1,30 @@
 <template>
   <form @submit="sendData($event)">
-    <input type="text" v-model="name" id="name" />
-    <input type="email" v-model="email" id="email" />
-    <input type="number" min="18" v-model="age" id="age" />
-    <button>enviar</button>
+    <div>
+      <label for="name">Nome<span>*</span></label>
+      <input type="text" v-model="name" id="name" />
+    </div>
+    <div>
+      <label for="email">Email<span>*</span></label>
+      <input type="email" v-model="email" id="email" />
+    </div>
+    <div>
+      <label for="age">Idade<span>*</span></label>
+      <input type="number" min="18" v-model="age" id="age" />
+    </div>
+    <button>Enviar</button>
   </form>
+  <MessageComp :msg="msg" v-show="msg" />
 </template>
 
 <script>
+import MessageComp from "@/components/Message.vue";
+
 export default {
   name: "FormComp",
+  components: {
+    MessageComp,
+  },
   props: {
     typeData: String,
   },
@@ -18,22 +33,37 @@ export default {
       name: "",
       email: "",
       age: "",
+      msg: null,
     };
   },
   methods: {
-    sendData(e) {
+    async sendData(e) {
       e.preventDefault();
 
-      //se for == edit
-      //seta os campos atraves de uma requisicao de buscar dados
-      console.log({ name: this.name, email: this.email, age: this.age });
-      //manda os campos pra requisicao de patch
+      const data = { name: this.name, email: this.email, age: this.age };
+      const dataJson = JSON.stringify(data);
 
-      //se for == create
-      //conferir se todos os campos estão sendo enviados
-      //manda os campos para requisiçao de post
+      if (this.typeData == "create") {
+        const response = await fetch("http://localhost:3000/user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: dataJson,
+        });
 
-      alert(this.typeData);
+        if (response.status == 201) {
+          this.msg = "Usuário criado com sucesso!";
+
+          setTimeout(() => (this.msg = ""), 3000);
+        } else {
+          response.status == 409
+            ? (this.msg = "Usuário com este nome já foi cadastrado!")
+            : (this.msg = "Não foi possível criar usuário!");
+
+          setTimeout(() => (this.msg = ""), 3000);
+        }
+      }
+
+      //TODO se typedata for == edit
 
       this.name = "";
       this.email = "";
@@ -42,3 +72,59 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 80vw;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  color: #00d256;
+  font-size: larger;
+}
+
+input {
+  border-radius: 5px;
+  font-size: larger;
+  padding: 0 5px;
+}
+
+input,
+button {
+  height: 30px;
+  border: none;
+}
+
+span {
+  color: red;
+}
+
+button {
+  border-radius: 20px;
+  width: 50%;
+  margin-top: 0.3rem;
+  align-self: center;
+  background-color: #00d256;
+  color: #ffff;
+  font-size: large;
+}
+
+@media (min-width: 1024px) {
+  form {
+    width: 60vw;
+  }
+
+  input,
+  button {
+    height: 50px;
+  }
+}
+</style>
