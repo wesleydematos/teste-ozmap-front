@@ -1,10 +1,10 @@
 <template>
-  <main>
+  <div class="home main-container">
     <div>
       <h1>Cadastre usuários:</h1>
     </div>
     <FormComp typeData="create" />
-  </main>
+  </div>
 </template>
 
 <script>

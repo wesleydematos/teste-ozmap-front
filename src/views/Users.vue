@@ -3,14 +3,15 @@
     <FormComp typeData="edit" />
     <span @click="closeEditModal">Close edit modal</span>
   </div>
-  <main>
+  <main class="users main-container">
     <h1>Usuários</h1>
     <ul>
       <li v-for="user in users" :key="user.name">
         <p>Nome: {{ user.name }}</p>
         <p>Idade: {{ user.age }}</p>
         <p>Email: {{ user.email }}</p>
-        <button @click="openEditModal">Edit</button>
+        <button @click="openEditModal(user.name)">Editar</button>
+        <button @click="openDeleteModal(user.name)">Deletar</button>
       </li>
     </ul>
     <p>páginas</p>
@@ -40,14 +41,23 @@ export default {
       page: 1,
       nextPage: "link.com",
       modalEditOpen: false,
+      modalDeleteOpen: false,
     };
   },
   methods: {
-    openEditModal() {
+    openEditModal(name) {
       this.modalEditOpen = true;
+      localStorage.setItem("username", name);
     },
     closeEditModal() {
       this.modalEditOpen = false;
+    },
+    openDeleteModal(name) {
+      this.modalDeleteOpen = true;
+      localStorage.setItem("username", name);
+    },
+    closeDeleteModal() {
+      this.modalDeleteOpen = false;
     },
   },
 };

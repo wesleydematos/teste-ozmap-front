@@ -4,8 +4,8 @@
       <p>OzUsers</p>
     </div>
     <nav>
-      <a>Cadastro</a>
-      <a>Usuários</a>
+      <router-link to="/">Cadastro</router-link>
+      <router-link to="/users">Usuários</router-link>
     </nav>
   </header>
 </template>
@@ -26,7 +26,7 @@ header {
 }
 
 .logo > p {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 nav {
@@ -34,7 +34,11 @@ nav {
   gap: 0.8rem;
 }
 
-nav > a {
-  font-size: 1.5rem;
+a {
+  font-size: 1.3rem;
+}
+
+a:hover {
+  color: #00d256;
 }
 </style>
