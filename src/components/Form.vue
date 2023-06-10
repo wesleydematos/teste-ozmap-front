@@ -36,6 +36,11 @@ export default {
       msg: null,
     };
   },
+  mounted() {
+    if (this.typeData == "edit") {
+      this.getUserData();
+    }
+  },
   methods: {
     async sendData(e) {
       e.preventDefault();
@@ -63,11 +68,45 @@ export default {
         }
       }
 
-      //TODO se typedata for == edit
+      if (this.typeData == "edit") {
+        const username = localStorage.getItem("username");
+
+        const response = await fetch(`http://localhost:3000/user/${username}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: dataJson,
+        });
+
+        if (response.status == 200) {
+          this.msg = "Usuário editado com sucesso!";
+
+          setTimeout(() => (this.msg = ""), 3000);
+        } else {
+          response.status == 409
+            ? (this.msg = "Usuário com este nome já foi cadastrado!")
+            : (this.msg = "Não foi possível editar usuário!");
+
+          setTimeout(() => (this.msg = ""), 3000);
+        }
+      }
 
       this.name = "";
       this.email = "";
       this.age = "";
+
+      setTimeout(() => location.reload(), 2000);
+    },
+
+    async getUserData() {
+      const username = localStorage.getItem("username");
+
+      const req = await fetch(`http://localhost:3000/user/${username}`);
+
+      const user = await req.json();
+
+      this.name = user.name;
+      this.email = user.email;
+      this.age = user.age;
     },
   },
 };
