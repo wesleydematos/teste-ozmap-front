@@ -13,6 +13,12 @@
   </div>
   <main class="users main-container">
     <h1>Usuários:</h1>
+    <div class="pages">
+      <p>Páginas:</p>
+      <button :disabled="page == 1" @click="getLastPage">&lt;</button>
+      <p>{{ page }}</p>
+      <button :disabled="page >= totalPage" @click="getNextPage">></button>
+    </div>
     <ul>
       <li v-for="user in users" :key="user.name">
         <p>Nome: {{ user.name }}</p>
@@ -22,12 +28,6 @@
         <button @click="openDeleteModal(user.name)">Deletar</button>
       </li>
     </ul>
-    <div class="pages">
-      <p>Páginas:</p>
-      <button>&lt;</button>
-      <p>{{ page }}</p>
-      <button>></button>
-    </div>
   </main>
 </template>
 
@@ -43,6 +43,7 @@ export default {
     return {
       users: [],
       page: 1,
+      totalPage: 0,
       nextPage: "link.com",
       modalEditOpen: false,
       modalDeleteOpen: false,
@@ -73,6 +74,9 @@ export default {
 
       const data = await req.json();
 
+      const totalPage = Math.ceil(data.total / 10);
+      this.totalPage = totalPage;
+
       this.users = data.rows;
       this.nextPage = data.nextPage;
     },
@@ -86,6 +90,16 @@ export default {
 
       this.getUsers();
       this.closeDeleteModal();
+    },
+
+    getNextPage() {
+      this.page += 1;
+      this.getUsers();
+    },
+
+    getLastPage() {
+      this.page -= 1;
+      this.getUsers();
     },
   },
   mounted() {
@@ -118,7 +132,7 @@ li {
 }
 
 .pages {
-  margin-top: 3.5rem;
+  margin-bottom: 3.5rem;
   display: flex;
   gap: 0.3rem;
 }
