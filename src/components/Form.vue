@@ -47,7 +47,7 @@ export default {
       e.preventDefault();
 
       const data = { name: this.name, email: this.email, age: this.age };
-      const dataJson = JSON.stringify(data);
+      let dataJson = JSON.stringify(data);
 
       if (this.typeData == "create") {
         const response = await fetch("http://localhost:3000/user", {
@@ -71,6 +71,13 @@ export default {
 
       if (this.typeData == "edit") {
         const username = localStorage.getItem("username");
+        const jsonParse = JSON.parse(dataJson);
+
+        if (jsonParse.name == username) {
+          delete jsonParse.name;
+        }
+
+        dataJson = JSON.stringify(jsonParse);
 
         const response = await fetch(`http://localhost:3000/user/${username}`, {
           method: "PATCH",
@@ -82,19 +89,19 @@ export default {
           this.msg = "Usuário editado com sucesso!";
 
           setTimeout(() => (this.msg = ""), 3000);
+          setTimeout(() => this.functionProp(), 2000);
+
+          this.name = "";
+          this.email = "";
+          this.age = "";
         } else {
           response.status == 409
             ? (this.msg = "Usuário com este nome já foi cadastrado!")
             : (this.msg = "Não foi possível editar usuário!");
 
           setTimeout(() => (this.msg = ""), 3000);
-          setTimeout(() => this.functionProp(), 2000);
         }
       }
-
-      this.name = "";
-      this.email = "";
-      this.age = "";
     },
 
     async getUserData() {
