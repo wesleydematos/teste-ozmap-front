@@ -27,6 +27,7 @@ export default {
   },
   props: {
     typeData: String,
+    functionProp: Promise,
   },
   data() {
     return {
@@ -89,12 +90,11 @@ export default {
           setTimeout(() => (this.msg = ""), 3000);
         }
       }
+      setTimeout(() => this.functionProp(), 2000);
 
       this.name = "";
       this.email = "";
       this.age = "";
-
-      setTimeout(() => location.reload(), 2000);
     },
 
     async getUserData() {
