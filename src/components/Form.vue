@@ -88,9 +88,9 @@ export default {
             : (this.msg = "Não foi possível editar usuário!");
 
           setTimeout(() => (this.msg = ""), 3000);
+          setTimeout(() => this.functionProp(), 2000);
         }
       }
-      setTimeout(() => this.functionProp(), 2000);
 
       this.name = "";
       this.email = "";
