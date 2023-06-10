@@ -1,15 +1,20 @@
 <template>
   <div v-if="modalEditOpen" class="modal">
-    <FormComp typeData="edit" :functionProp="closeEditModal" />
-    <span @click="closeEditModal">Close edit modal</span>
+    <div class="contentModal">
+      <span @click="closeEditModal">X</span>
+      <h1>Editar usuário:</h1>
+      <FormComp typeData="edit" :functionProp="closeEditModal" />
+    </div>
   </div>
   <div v-if="modalDeleteOpen" class="modal">
-    <div>Tem certeza que deseja deletar usuário?</div>
-    <div>
-      <button @click="deleteUser">Sim</button>
-      <button @click="closeDeleteModal">Cancelar</button>
+    <div class="contentModal">
+      <span @click="closeDeleteModal">X</span>
+      <div>Tem certeza que deseja deletar o usuário {{ user }}?</div>
+      <div class="btns">
+        <button @click="deleteUser">Sim</button>
+        <button @click="closeDeleteModal" class="cancel">Cancelar</button>
+      </div>
     </div>
-    <span @click="closeDeleteModal">Close delete modal</span>
   </div>
   <main class="users main-container">
     <h1>Usuários:</h1>
@@ -43,6 +48,7 @@ export default {
   },
   data() {
     return {
+      user: "",
       users: [],
       page: 1,
       totalPage: 0,
@@ -64,6 +70,7 @@ export default {
 
     openDeleteModal(name) {
       this.modalDeleteOpen = true;
+      this.user = name;
       localStorage.setItem("username", name);
     },
 
@@ -111,6 +118,45 @@ export default {
 </script>
 
 <style scoped>
+.modal {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.contentModal {
+  color: black;
+  display: flex;
+  flex-direction: column;
+  background: #1d1d1d;
+  margin-top: 5rem;
+  min-height: 150px;
+  border-radius: 10px;
+  padding: 10px;
+  height: fit-content;
+}
+
+.contentModal > h1,
+div {
+  color: #ffff;
+}
+
+.contentModal > div {
+  font-size: large;
+  margin: 9px 0;
+}
+
+.contentModal > span {
+  color: red;
+  align-self: flex-end;
+  cursor: pointer;
+  font-size: larger;
+}
+
 .users {
   display: flex;
   flex-direction: column;
@@ -184,6 +230,14 @@ li > p {
 
 .btns > button {
   height: 25px;
-  width: 65px;
+  min-width: 65px;
+}
+.cancel {
+  background-color: red;
+  width: 80px;
+}
+
+.cancel:hover {
+  background-color: rgb(165, 0, 0);
 }
 </style>
