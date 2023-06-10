@@ -1,13 +1,13 @@
 <template>
   <div v-if="modalEditOpen" class="modal">
-    <FormComp typeData="edit" />
+    <FormComp typeData="edit" :functionProp="closeEditModal" />
     <span @click="closeEditModal">Close edit modal</span>
   </div>
   <div v-if="modalDeleteOpen" class="modal">
     <div>Tem certeza que deseja deletar usuário?</div>
     <div>
-      <button>Sim</button>
-      <button>Cancelar</button>
+      <button @click="deleteUser">Sim</button>
+      <button @click="closeDeleteModal">Cancelar</button>
     </div>
     <span @click="closeDeleteModal">Close delete modal</span>
   </div>
@@ -53,16 +53,21 @@ export default {
       this.modalEditOpen = true;
       localStorage.setItem("username", name);
     },
+
     closeEditModal() {
       this.modalEditOpen = false;
+      this.getUsers();
     },
+
     openDeleteModal(name) {
       this.modalDeleteOpen = true;
       localStorage.setItem("username", name);
     },
+
     closeDeleteModal() {
       this.modalDeleteOpen = false;
     },
+
     async getUsers() {
       const req = await fetch(`http://localhost:3000/users/?page=${this.page}`);
 
@@ -70,6 +75,17 @@ export default {
 
       this.users = data.rows;
       this.nextPage = data.nextPage;
+    },
+
+    async deleteUser() {
+      const username = localStorage.getItem("username");
+
+      await fetch(`http://localhost:3000/user/${username}`, {
+        method: "DELETE",
+      });
+
+      this.getUsers();
+      this.closeDeleteModal();
     },
   },
   mounted() {
