@@ -60,6 +60,10 @@ export default {
           this.msg = "Usuário criado com sucesso!";
 
           setTimeout(() => (this.msg = ""), 3000);
+
+          this.name = "";
+          this.email = "";
+          this.age = "";
         } else {
           response.status == 409
             ? (this.msg = "Usuário com este nome já foi cadastrado!")
