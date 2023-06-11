@@ -14,6 +14,7 @@
         <button @click="deleteUser">Sim</button>
         <button @click="closeDeleteModal" class="cancel">Cancelar</button>
       </div>
+      <MessageComp :msg="msg" v-show="msg" />
     </div>
   </div>
   <main class="users main-container">
@@ -40,14 +41,17 @@
 
 <script>
 import FormComp from "@/components/Form.vue";
+import MessageComp from "@/components/Message.vue";
 
 export default {
   name: "UsersPage",
   components: {
     FormComp,
+    MessageComp,
   },
   data() {
     return {
+      msg: null,
       user: "",
       users: [],
       page: 1,
@@ -93,12 +97,18 @@ export default {
     async deleteUser() {
       const username = localStorage.getItem("username");
 
-      await fetch(`http://localhost:3000/user/${username}`, {
+      const response = await fetch(`http://localhost:3000/user/${username}`, {
         method: "DELETE",
       });
 
+      if (response.status == 204) {
+        this.msg = "Usuário deletado com sucesso!";
+      } else {
+        this.msg = "Não foi possível deletar o usuário!";
+      }
+      setTimeout(() => (this.msg = ""), 1500);
+      setTimeout(() => this.closeDeleteModal(), 1500);
       this.getUsers();
-      this.closeDeleteModal();
     },
 
     getNextPage() {
