@@ -101,7 +101,6 @@ export default {
         method: "DELETE",
       });
 
-      console.log(response);
       if (response.status == 204) {
         this.msg = "Usuário deletado com sucesso!";
       } else {
